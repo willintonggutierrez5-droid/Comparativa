@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infografía interactiva de Productos Multimedia — Willintong Gutiérrez</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans, Inter y JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          animation: {
+            'slide-in': 'slideIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'pulse-ring': 'pulseRing 2s infinite',
+            'float-slow': 'floatSlow 5s ease-in-out infinite',
+          },
+          keyframes: {
+            slideIn: {
+              '0%': { opacity: '0', transform: 'translateY(12px) scale(0.99)' },
+              '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+            },
+            pulseRing: {
+              '0%': { transform: 'scale(0.95)', opacity: '0.8' },
+              '70%': { transform: 'scale(1.65)', opacity: '0' },
+              '100%': { transform: 'scale(1.65)', opacity: '0' },
+            },
+            floatSlow: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-6px)' },
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #eef1f7;
+      background-image:
+        radial-gradient(circle at 15% 12%, rgba(59, 91, 253, 0.08), transparent 35%),
+        radial-gradient(circle at 85% 88%, rgba(255, 92, 119, 0.08), transparent 35%),
+        radial-gradient(rgba(148, 163, 184, 0.22) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 22px 22px;
+      color: #1e293b;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    }
+
+    /* Botones interactivos estilo Genially */
+    .genially-btn {
+      transition: transform 0.18s ease, box-shadow 0.22s ease, background-color 0.2s ease;
+    }
+    .genially-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px -6px rgba(59, 91, 253, 0.26), 0 0 0 4px rgba(59, 91, 253, 0.14);
+    }
+
+    /* Punto interactivo (Hotspot) con pulso */
+    .hotspot {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .hotspot:hover {
+      transform: scale(1.1);
+    }
+    .hotspot::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 9999px;
+      background: currentColor;
+      opacity: 0.35;
+      animation: pulseRing 2.1s infinite;
+    }
+
+    /* Control deslizante FPS */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+      background: #dbeafe;
+      height: 0.5rem;
+      border-radius: 9999px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      margin-top: -6px;
+      background-color: #3b5bfd;
+      height: 1.25rem;
+      width: 1.25rem;
+      border-radius: 9999px;
+      border: 3px solid #ffffff;
+      box-shadow: 0 3px 10px rgba(59, 91, 253, 0.4);
+    }
+
+    .eq-bar {
+      transition: height 0.12s ease;
+    }
+
+    /* Scrollbar limpio dentro de láminas en pantallas pequeñas */
+    .slide-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .slide-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .slide-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-blue-200 selection:text-blue-950">
+
+  <!-- ===================================================================== -->
+  <!-- BARRA SUPERIOR DEL REPRODUCTOR ESTILO GENIALLY                        -->
+  <!-- ===================================================================== -->
+  <header class="w-full bg-white/90 backdrop-blur-md border-b border-slate-200/90 px-4 sm:px-6 py-2.5 z-40">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <!-- Marca y título de la pieza -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#3b5bfd] to-[#7c3aed] text-white flex items-center justify-center font-display font-extrabold text-sm shadow-sm">
+          WG
+        </div>
+        <div>
+          <span class="text-[11px] font-mono uppercase tracking-wider text-slate-400 block leading-none">Willintong Gutiérrez</span>
+          <h1 class="text-sm sm:text-base font-extrabold text-slate-800 leading-tight mt-0.5">Infografía interactiva de Productos Multimedia</h1>
+        </div>
+      </div>
+
+      <!-- Herramientas interactivas globales -->
+      <div class="flex items-center gap-2">
+        <button onclick="openGlossaryModal()" class="genially-btn px-3.5 py-1.5 rounded-full bg-blue-50 hover:bg-blue-100 text-[#3b5bfd] border border-blue-200 text-xs font-semibold flex items-center gap-1.5">
+          <span class="hotspot w-2.5 h-2.5 bg-[#3b5bfd] text-[#3b5bfd]"></span>
+          <span>Glosario clave</span>
+        </button>
+
+        <button onclick="toggleGridOverview()" class="genially-btn px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center gap-1.5" title="Ver las 9 láminas en miniatura">
+          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          <span class="hidden sm:inline">9 Láminas</span>
+        </button>
+
+        <button onclick="toggleFullscreen()" class="genially-btn p-2 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-700 border border-slate-200" title="Ver en pantalla completa" aria-label="Ver en pantalla completa">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- ESCENARIO CENTRAL ESTILO LIENZO GENIALLY (9 LÁMINAS)                  -->
+  <!-- ===================================================================== -->
+  <main id="stageWrapper" class="flex-1 flex items-center justify-center px-2 sm:px-6 lg:px-10 py-4 sm:py-6 relative">
+    <div class="w-full max-w-6xl relative flex items-center">
+
+      <!-- Flecha Izquierda (Anterior lámina) -->
+      <button id="arrowPrev" onclick="prevSlide()" aria-label="Lámina anterior" class="hidden md:flex -ml-5 lg:-ml-7 mr-3 w-12 h-12 rounded-full bg-white hover:bg-[#3b5bfd] text-slate-700 hover:text-white border border-slate-200 shadow-lg items-center justify-center transition-all shrink-0 z-20 disabled:opacity-30 disabled:pointer-events-none">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <!-- LIENZO DE PRESENTACIÓN (SLIDE CANVAS) -->
+      <div id="geniallyCanvas" class="w-full bg-white rounded-3xl border border-slate-200/90 shadow-2xl shadow-slate-300/60 overflow-hidden relative min-h-[540px] lg:aspect-[16/9] flex flex-col justify-between">
+
+        <!-- =============================================================== -->
+        <!-- LÁMINA 1: ECOSISTEMA MULTIMEDIA / HOJA DE RUTA                  -->
+        <!-- =============================================================== -->
+        <section id="slide-1" class="slide-view flex-1 p-6 sm:p-9 lg:p-11 flex flex-col justify-between relative overflow-y-auto slide-scroll animate-slide-in">
+          <!-- Decoración editorial suave -->
+          <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-blue-100/60 blur-3xl pointer-events-none"></div>
+          <div class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-rose-100/50 blur-3xl pointer-events-none"></div>
+
+          <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <div class="lg:col-span-7 space-y-3.5">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-semibold text-[#3b5bfd]">
+                <span class="hotspot w-2.5 h-2.5 bg-[#3b5bfd] text-[#3b5bfd]"></span>
+                <span>Lámina 01 • Hoja de Ruta Multimedia</span>
+              </div>
+
+              <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
+                Estableciendo las bases del <span class="text-[#3b5bfd]">ecosistema de productos multimedia</span>
+              </h2>
+
+              <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
+                Cada formato digital está compuesto por elementos de imagen y/o sonido e interacción. Cada uno tiene una intención diferente. En este recorrido se muestran 4 de los principales caminos que podemos tomar en la creación multimedia. Además se pueden ver las evoluciones que experimentan estos caminos al pasar de la visión pasiva a la participación activa.
+              </p>
+
+              <div class="flex flex-wrap items-center gap-2.5 pt-1">
+                <button onclick="goToSlide(2)" class="genially-btn px-5 py-2.5 rounded-full bg-[#3b5bfd] text-white text-xs sm:text-sm font-semibold shadow-sm flex items-center gap-2">
+                  <span>Comenzar recorrido</span>
+                  <span>→</span>
+                </button>
+                <button onclick="openDetailModal('Autoría y propósito', 'Esta infografía fue diseñada por Willintong Gutiérrez para comparar de forma visual y práctica cuatro grandes familias de productos multimedia: animación, videojuegos, podcasts y e-learning.', '#3b5bfd')" class="genially-btn px-4 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs sm:text-sm font-semibold flex items-center gap-2">
+                  <span class="hotspot w-2.5 h-2.5 bg-[#ff5c77] text-[#ff5c77]"></span>
+                  <span>Sobre esta guía</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Ilustración Vectorial Editorial de Ecosistema Multimedia -->
+            <div class="lg:col-span-5 flex justify-center">
+              <svg viewBox="0 0 380 250" class="w-full max-w-sm h-auto drop-shadow-sm animate-float-slow" aria-label="Ilustración vectorial del ecosistema multimedia">
+                <rect x="20" y="20" width="340" height="210" rx="24" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2" />
+                <!-- Líneas conectoras -->
+                <path d="M190 125 L95 72 M190 125 L285 72 M190 125 L95 178 M190 125 L285 178" stroke="#cbd5e1" stroke-width="2.5" stroke-dasharray="5 5" />
+                <!-- Nodo central -->
+                <circle cx="190" cy="125" r="38" fill="#3b5bfd" />
+                <circle cx="190" cy="125" r="46" fill="none" stroke="#93c5fd" stroke-width="2" />
+                <text x="190" y="122" text-anchor="middle" fill="#ffffff" font-family="Plus Jakarta Sans, sans-serif" font-size="11" font-weight="800">MEDIOS</text>
+                <text x="190" y="136" text-anchor="middle" fill="#dbeafe" font-family="Inter, sans-serif" font-size="9" font-weight="600">DIGITALES</text>
+                <!-- Nodo Animación -->
+                <rect x="45" y="44" width="96" height="52" rx="14" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2" />
+                <circle cx="67" cy="70" r="10" fill="#7c3aed" />
+                <polygon points="65,65 72,70 65,75" fill="#fff" />
+                <text x="108" y="67" text-anchor="middle" fill="#4c1d95" font-size="10" font-weight="700">Animación</text>
+                <text x="108" y="80" text-anchor="middle" fill="#6d28d9" font-size="8">2D • 3D • FPS</text>
+                <!-- Nodo Videojuegos -->
+                <rect x="239" y="44" width="96" height="52" rx="14" fill="#d1fae5" stroke="#10b981" stroke-width="2" />
+                <circle cx="261" cy="70" r="10" fill="#059669" />
+                <rect x="256" y="68" width="10" height="4" rx="1" fill="#fff" />
+                <text x="302" y="67" text-anchor="middle" fill="#064e3b" font-size="10" font-weight="700">Juegos</text>
+                <text x="302" y="80" text-anchor="middle" fill="#047857" font-size="8">No lineal</text>
+                <!-- Nodo Podcasts -->
+                <rect x="45" y="154" width="96" height="52" rx="14" fill="#ffe4e6" stroke="#ff5c77" stroke-width="2" />
+                <circle cx="67" cy="180" r="10" fill="#e11d48" />
+                <rect x="64" y="174" width="6" height="9" rx="3" fill="#fff" />
+                <text x="108" y="177" text-anchor="middle" fill="#881337" font-size="10" font-weight="700">Podcasts</text>
+                <text x="108" y="190" text-anchor="middle" fill="#be123c" font-size="8">Audio RSS</text>
+                <!-- Nodo E-learning -->
+                <rect x="239" y="154" width="96" height="52" rx="14" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+                <circle cx="261" cy="180" r="10" fill="#d97706" />
+                <polygon points="261,174 268,178 261,182 254,178" fill="#fff" />
+                <text x="302" y="177" text-anchor="middle" fill="#78350f" font-size="10" font-weight="700">E-learning</text>
+                <text x="302" y="190" text-anchor="middle" fill="#b45309" font-size="8">LMS • Didáctica</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 4 Tarjetas de Acceso Directo a cada Tipología -->
+          <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mt-4">
+            <button onclick="goToSlide(2)" class="group text-left p-4 rounded-2xl bg-violet-50/80 hover:bg-violet-100/90 border border-violet-200 transition-all hover:-translate-y-0.5 flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-mono font-bold text-violet-700 bg-white px-2.5 py-0.5 rounded-full border border-violet-200">Lámina 02</span>
+                <span class="hotspot w-3 h-3 bg-violet-600 text-violet-500"></span>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-base group-hover:text-violet-700">Animación</h3>
+                <p class="text-xs text-slate-600 mt-1">Movimiento cuadro a cuadro. 2D/3D. Persistencia retiniana.</p>
+              </div>
+            </button>
+
+            <button onclick="goToSlide(3)" class="group text-left p-4 rounded-2xl bg-emerald-50/80 hover:bg-emerald-100/90 border border-emerald-200 transition-all hover:-translate-y-0.5 flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-mono font-bold text-emerald-700 bg-white px-2.5 py-0.5 rounded-full border border-emerald-200">Lámina 03</span>
+                <span class="hotspot w-3 h-3 bg-emerald-600 text-emerald-500"></span>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-base group-hover:text-emerald-700">Videojuegos</h3>
+                <p class="text-xs text-slate-600 mt-1">Participación del jugador. Narrativa no lineal. Motores de juego.</p>
+              </div>
+            </button>
+
+            <button onclick="goToSlide(4)" class="group text-left p-4 rounded-2xl bg-rose-50/80 hover:bg-rose-100/90 border border-rose-200 transition-all hover:-translate-y-0.5 flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-mono font-bold text-rose-700 bg-white px-2.5 py-0.5 rounded-full border border-rose-200">Lámina 04</span>
+                <span class="hotspot w-3 h-3 bg-[#ff5c77] text-[#ff5c77]"></span>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-base group-hover:text-rose-700">Podcasts</h3>
+                <p class="text-xs text-slate-600 mt-1">Bajo demanda. Nichos profundos. Canales RSS.</p>
+              </div>
+            </button>
+
+            <button onclick="goToSlide(5)" class="group text-left p-4 rounded-2xl bg-amber-50/80 hover:bg-amber-100/90 border border-amber-200 transition-all hover:-translate-y-0.5 flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-mono font-bold text-amber-700 bg-white px-2.5 py-0.5 rounded-full border border-amber-200">Lámina 05</span>
+                <span class="hotspot w-3 h-3 bg-amber-500 text-amber-400"></span>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-base group-hover:text-amber-700">E-learning</h3>
+                <p class="text-xs text-slate-600 mt-1">Plataformas LMS. Diseño instruccional. Aprendizaje medible.</p>
+              </div>
+            </button>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- LÁMINA 2: FUNDAMENTOS DE LA ANIMACIÓN                           -->
+        <!-- =============================================================== -->
+        <section id="slide-2" class="slide-view hidden flex-1 p-6 sm:p-9 lg:p-10 flex flex-col justify-between overflow-y-auto slide-scroll animate-slide-in">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100">
+            <div>
+              <span class="text-xs font-mono font-semibold uppercase tracking-wider text-violet-600">Lámina 02 • Definiendo el medio</span>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Fundamentos de la Animación</h2>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="openDetailModal('Persistencia retiniana', 'El ojo conserva durante una fracción de segundo cada imagen que ve. Al proyectar dibujos o cuadros uno tras otro a buena velocidad, nuestro cerebro los enlaza y percibe un movimiento continuo.', '#7c3aed')" class="genially-btn px-3.5 py-1.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200 text-xs font-semibold flex items-center gap-1.5">
+                <span class="hotspot w-2.5 h-2.5 bg-violet-600 text-violet-500"></span>
+                <span>¿Por qué vemos movimiento?</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center my-auto py-4">
+            <!-- Columna Izquierda: Conceptos y selector 2D vs 3D -->
+            <div class="lg:col-span-6 space-y-4">
+              <p class="text-sm text-slate-700 leading-relaxed bg-violet-50/70 p-4 rounded-2xl border border-violet-100">
+                La animación trata de dar vida a las imágenes estáticas mediante el ordenamiento de estas en secuencia. Parece fácil de entender una vez hecho, pero en realidad requiere más tiempo, recursos e inversión que realizar un podcast informativo.
+              </p>
+
+              <!-- Selector interactivo 2D vs 3D -->
+              <div class="rounded-2xl border border-slate-200 p-4 bg-slate-50/70 space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Explora las técnicas:</span>
+                  <div class="inline-flex rounded-full bg-white p-1 border border-slate-200">
+                    <button onclick="toggleAnimTech('2d')" id="btn-anim-2d" class="px-3.5 py-1 rounded-full text-xs font-bold bg-violet-600 text-white transition">Animación 2D</button>
+                    <button onclick="toggleAnimTech('3d')" id="btn-anim-3d" class="px-3.5 py-1 rounded-full text-xs font-bold text-slate-600 hover:text-slate-900 transition">Animación 3D</button>
+                  </div>
+                </div>
+
+                <div id="anim-tech-content" class="bg-white p-4 rounded-xl border border-violet-100 flex items-center gap-4">
+                  <!-- Ilustración SVG dinámica 2D/3D -->
+                  <div id="anim-tech-svg" class="shrink-0">
+                    <svg width="76" height="76" viewBox="0 0 76 76">
+                      <rect x="6" y="10" width="46" height="46" rx="10" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2" />
+                      <rect x="22" y="20" width="46" height="46" rx="10" fill="#ddd6fe" stroke="#7c3aed" stroke-width="2" />
+                      <circle cx="45" cy="43" r="10" fill="#7c3aed" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 id="anim-tech-title" class="font-bold text-slate-900 text-sm">Dibujo secuencial en dos dimensiones</h4>
+                    <p id="anim-tech-desc" class="text-xs text-slate-600 leading-relaxed mt-1">
+                      Se trabajan planos e ilustraciones que van cambiando de forma progresiva. Es muy expresivo y adecuado para explicaciones visuales y piezas editoriales.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna Derecha: Simulador de FPS en tiempo real -->
+            <div class="lg:col-span-6 rounded-2xl bg-violet-50/50 border border-violet-200 p-5 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-violet-900 flex items-center gap-2">
+                  <span class="hotspot w-2.5 h-2.5 bg-violet-600 text-violet-500"></span>
+                  Laboratorio de Fotogramas por Segundo
+                </span>
+                <span id="fpsBadge" class="px-3 py-0.5 rounded-full bg-white text-violet-700 border border-violet-200 font-mono text-xs font-bold">12 FPS</span>
+              </div>
+
+              <div class="relative rounded-2xl overflow-hidden bg-white border border-violet-200 shadow-2xs">
+                <canvas id="fpsCanvas" class="w-full h-44 block"></canvas>
+                <div class="absolute bottom-2 left-3 right-3 flex justify-between text-[11px] font-mono text-slate-500 pointer-events-none">
+                  <span id="fpsPerceptionLabel">Ritmo medio (12 FPS)</span>
+                  <span id="frameCounterLabel">Cuadro #0</span>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[11px] font-mono text-slate-500 mb-1">
+                  <span>4 FPS (saltos visibles)</span>
+                  <span>12 FPS</span>
+                  <span>24 FPS (fluido)</span>
+                </div>
+                <input id="fpsSlider" type="range" min="4" max="24" step="2" value="12" class="w-full" aria-label="Control de fotogramas por segundo" />
+                <p class="text-xs text-slate-600 mt-1">
+                  Arrastra para ver cómo afecta al sentido de continuidad el incremento de cuadros por segundo.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-100">
+            <span>Tipología 1 de 4 • Animación</span>
+            <span>Los puntos interactivos te permiten profundizar en los conceptos.</span>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- LÁMINA 3: EL PODER DEL VIDEOJUEGO                               -->
+        <!-- =============================================================== -->
+        <section id="slide-3" class="slide-view hidden flex-1 p-6 sm:p-9 lg:p-10 flex flex-col justify-between overflow-y-auto slide-scroll animate-slide-in">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100">
+            <div>
+              <span class="text-xs font-mono font-semibold uppercase tracking-wider text-emerald-600">Lámina 03 • Participación activa</span>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">El Poder del Videojuego</h2>
+            </div>
+            <button onclick="openDetailModal('Motores de juego', 'Un motor de juego (como Unity o Unreal) reúne en un mismo entorno la física de los objetos, las reglas de interacción, el sonido y los gráficos en tiempo real para que el mundo responda al instante.', '#059669')" class="genially-btn px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold flex items-center gap-1.5">
+              <span class="hotspot w-2.5 h-2.5 bg-emerald-600 text-emerald-500"></span>
+              <span>¿Qué hace un motor de juego?</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center my-auto py-4">
+            <!-- Pilares del videojuego -->
+            <div class="lg:col-span-6 space-y-3.5">
+              <p class="text-sm text-slate-700 leading-relaxed bg-emerald-50/70 p-4 rounded-2xl border border-emerald-100">
+                En este caso el jugador pasa a ser protagonista de su propia aventura. Las decisiones que toma hacen que existan diferentes caminos. De esta forma se logra un alto nivel de fijación difícil de igualar en otros medios.
+              </p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="p-3.5 rounded-2xl bg-white border border-emerald-200 shadow-2xs">
+                  <span class="text-xs font-mono font-bold text-emerald-600">01</span>
+                  <h4 class="font-bold text-slate-900 text-sm mt-1">Acción directa</h4>
+                  <p class="text-xs text-slate-600 mt-1 leading-relaxed">Con cada toque o comando se modifica instantáneamente el estado de la pantalla.</p>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-white border border-emerald-200 shadow-2xs">
+                  <span class="text-xs font-mono font-bold text-emerald-600">02</span>
+                  <h4 class="font-bold text-slate-900 text-sm mt-1">Narrativa no lineal</h4>
+                  <p class="text-xs text-slate-600 mt-1 leading-relaxed">La historia se bifurca en varios caminos y finaliza de formas diferentes en función de qué camino hayamos tomado.</p>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-white border border-emerald-200 shadow-2xs">
+                  <span class="text-xs font-mono font-bold text-emerald-600">03</span>
+                  <h4 class="font-bold text-slate-900 text-sm mt-1">Motor de mando</h4>
+                  <p class="text-xs text-slate-600 mt-1 leading-relaxed">Coordinación de lógica y física junto a gráficos. Permite mantener un conjunto coherente de reglas.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mini-simulador de historia ramificada -->
+            <div class="lg:col-span-6 rounded-2xl bg-emerald-50/50 border border-emerald-200 p-5 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-emerald-900 flex items-center gap-2">
+                  <span class="hotspot w-2.5 h-2.5 bg-emerald-600 text-emerald-500"></span>
+                  Prueba de narrativa ramificada
+                </span>
+                <span id="gameStateBadge" class="px-3 py-0.5 rounded-full bg-white text-emerald-700 border border-emerald-200 font-mono text-xs font-bold">DECISIÓN</span>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-white border border-emerald-200/80 space-y-3">
+                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  Ante nosotros tenemos una puerta sellada en el interior de una estación abandonada. Nos queda sólo una acción posible debido a que sólo tenemos energía para ello. ¿Qué hacemos?
+                </p>
+
+                <div id="gameChoices" class="space-y-2">
+                  <button onclick="chooseGameBranch('A')" class="genially-btn w-full text-left p-3 rounded-xl bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200 text-xs text-slate-800 flex items-center justify-between">
+                    <span><strong>Ruta A:</strong> Desviamos energía al panel de acceso principal</span>
+                    <span class="font-mono font-bold text-emerald-700">Elegir →</span>
+                  </button>
+                  <button onclick="chooseGameBranch('B')" class="genially-btn w-full text-left p-3 rounded-xl bg-blue-50/80 hover:bg-blue-100 border border-blue-200 text-xs text-slate-800 flex items-center justify-between">
+                    <span><strong>Ruta B:</strong> Activamos el escáner térmico y buscamos un ducto alternativo</span>
+                    <span class="font-mono font-bold text-[#3b5bfd]">Elegir →</span>
+                  </button>
+                </div>
+
+                <div id="gameOutcomeBox" class="hidden p-3.5 rounded-xl bg-slate-50 border border-emerald-200 text-xs space-y-2">
+                  <p id="gameOutcomeText" class="text-slate-700 leading-relaxed"></p>
+                  <button onclick="resetGameBranch()" class="text-emerald-700 hover:text-emerald-900 font-bold underline">
+                    Volver a decidir
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-100">
+            <span>Tipología 2 de 4 • Videojuegos</span>
+            <span>La interactividad permite que el usuario sea protagonista.</span>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- LÁMINA 4: CULTURA DEL PODCAST                                   -->
+        <!-- =============================================================== -->
+        <section id="slide-4" class="slide-view hidden flex-1 p-6 sm:p-9 lg:p-10 flex flex-col justify-between overflow-y-auto slide-scroll animate-slide-in">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100">
+            <div>
+              <span class="text-xs font-mono font-semibold uppercase tracking-wider text-[#ff5c77]">Lámina 04 • La intimidad del sonido</span>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Cultura del Podcast</h2>
+            </div>
+            <button onclick="openDetailModal('¿Cómo funciona un canal RSS?', 'El canal RSS es un archivo que actualiza automáticamente las plataformas de escucha (como Spotify o Apple Podcasts) cada vez que publicas un episodio nuevo, sin depender de un solo horario de emisión.', '#ff5c77')" class="genially-btn px-3.5 py-1.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold flex items-center gap-1.5">
+              <span class="hotspot w-2.5 h-2.5 bg-[#ff5c77] text-[#ff5c77]"></span>
+              <span>¿Cómo funciona un canal RSS?</span>
+            </button>
+          </div>
